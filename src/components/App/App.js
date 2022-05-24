@@ -1,10 +1,16 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styles from './styles.module.scss';
+import { ToastPortal } from 'components';
 
 export const App = () => {
+  const toastRef = useRef();
   const [text, setText] = useState('');
   const [mode, setMode] = useState('info');
   const [autoClose, setAutoClose] = useState(false);
+
+  const addToast = () => {
+    toastRef.current.addMessage({ mode, message: text });
+  };
 
   return (
     <div className={styles.main}>
@@ -18,6 +24,10 @@ export const App = () => {
         <form
           onSubmit={e => {
             e.preventDefault();
+            if (text) {
+              addToast();
+              setText('');
+            }
           }}
         >
           <div className={styles.autoClose}>
@@ -47,6 +57,8 @@ export const App = () => {
           <button>Submit</button>
         </form>
       </div>
+
+      <ToastPortal ref={toastRef} />
     </div>
   );
 };
